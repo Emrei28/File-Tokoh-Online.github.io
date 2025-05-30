@@ -2,6 +2,7 @@
 import React from 'react';
 
 function ProductCard({ product, onAddToCart, navigateTo }) { // Menerima 'navigateTo'
+  
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 cursor-pointer">
       {/* Tambahkan onClick ke div utama untuk navigasi */}

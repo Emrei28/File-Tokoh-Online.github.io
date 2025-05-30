@@ -7,6 +7,7 @@ import ProductDetailPage from './Components/ProductDetailPage';
 import Footer from './Components/Footer';
 import AboutPage from './Components/AboutPage';
 import ContactPage from './Components/ContactPage';
+
 import './App.css'
 
 function App() {
@@ -14,17 +15,29 @@ function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [selectedProductId, setSelectedProductId] = useState(null); // State untuk menyimpan ID produk yang dipilih
 
-  const addToCart = (product) => {
-    const existingItem = cartItems.find(item => item.id === product.id);
 
-    if (existingItem) {
-      setCartItems(cartItems.map(item =>
-        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-      ));
-    } else {
-      setCartItems([...cartItems, { ...product, quantity: 1 }]);
-    }
-    alert(`${product.name} ditambahkan ke keranjang!`);
+   const navigateTo = (page, productId = null) => {
+    setCurrentPage(page);
+    setSelectedProductId(productId);
+  };
+
+  const addToCart = (productToAdd, quantity = 1) => { // Default quantity = 1 jika tidak disediakan
+    setCartItems(prevItems => {
+      const existingItem = prevItems.find(item => item.id === productToAdd.id);
+      if (existingItem) {
+        // Jika produk sudah ada, update quantity-nya
+        return prevItems.map(item =>
+          item.id === productToAdd.id
+            ? { ...item, quantity: item.quantity + quantity } // Tambahkan quantity yang baru
+            : item
+        );
+      } else {
+        // Jika produk belum ada, tambahkan sebagai item baru
+        return [...prevItems, { ...productToAdd, quantity }]; // Sertakan quantity yang baru
+      }
+    });
+    // Opsional: navigasi ke halaman keranjang setelah menambahkan
+    // navigateTo('cart');
   };
 
   const updateQuantity = (productId, newQuantity) => {
@@ -39,11 +52,6 @@ function App() {
 
   const removeItem = (productId) => {
     setCartItems(cartItems.filter(item => item.id !== productId));
-  };
-
-  const navigateTo = (page, productId = null) => { // Tambahkan parameter productId
-    setCurrentPage(page);
-    setSelectedProductId(productId); // Simpan ID produk jika navigasi ke detail
   };
 
   return (
@@ -71,6 +79,7 @@ function App() {
             cartItems={cartItems}
             onUpdateQuantity={updateQuantity}
             onRemoveItem={removeItem}
+            navigateTo={navigateTo}
           />
         )}
 

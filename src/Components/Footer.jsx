@@ -30,7 +30,7 @@ function Footer() {
         </div>
       </div>
       <div className="border-t border-green-700 mt-6 pt-4 text-center text-sm text-green-300">
-        &copy; {year} Toko Tanaman Hias Lokal. Semua Hak Dilindungi.
+        &copy; {year}{<a href= 'https://www.instagram.com/_emreiii?igsh=MWpkMnNkZGI4azlvaA==' style={{color: 'black'}}> @MReihan</a>} Toko Tanaman Hias Lokal. Semua Hak Dilindungi.
       </div>
     </footer>
   );
