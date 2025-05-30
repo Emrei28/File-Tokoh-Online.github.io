@@ -10,7 +10,7 @@ function ProductDetailPage({ productId, onAddToCart, navigateTo }) {
     return (
       <div className="container mx-auto p-8 text-center bg-white shadow-md rounded-lg mt-8">
         <h2 className="text-2xl font-bold text-red-600">Produk tidak ditemukan!</h2>
-        <button onClick={() => navigateTo('home')} className="mt-4 bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600">
+        <button onClick={() => navigateTo('home')} className="mt-4 bg-green-500 text-white py-2 px-4 rounded-md hover:!bg-green-600">
           Kembali ke Beranda
         </button>
       </div>
@@ -26,7 +26,7 @@ function ProductDetailPage({ productId, onAddToCart, navigateTo }) {
         Kembali ke Daftar Produk
       </button>
 
-      <div className="flex flex-col md:flex-row gap-8">z
+      <div className="flex flex-col md:flex-row gap-8">
         <div className="md:w-1/2">
           <img
             src={product.image}

@@ -5,6 +5,8 @@ import ProductList from './Components/ProductList';
 import CartPage from './Components/CartPage';
 import ProductDetailPage from './Components/ProductDetailPage';
 import Footer from './Components/Footer';
+import AboutPage from './Components/AboutPage';
+import ContactPage from './Components/ContactPage';
 import './App.css'
 
 function App() {
@@ -59,6 +61,10 @@ function App() {
             <ProductList onAddToCart={addToCart} navigateTo={navigateTo} /> {/* <--- Pastikan baris ini ada dan benar */}
           </>
         )}
+
+        {currentPage === 'about' && <AboutPage />}
+
+        {currentPage === 'contact' && <ContactPage />}
 
         {currentPage === 'cart' && (
           <CartPage

@@ -70,6 +70,34 @@ const products = [
       potSize: "12-15 cm"
     }
   },
+   {
+    id: 6,
+    name: "Lidah Buaya (Aloe Vera)",
+    category: "Sukulen & Kaktus",
+    price: 35000,
+    image: "https://images.unsplash.com/photo-1632380211596-b96123618ca8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YWxvZSUyMHZlcmF8ZW58MHx8MHx8fDA%3D",
+    description: "Tanaman herbal dengan gel penyembuh, mudah dirawat.",
+    care: {
+      light: "Cahaya terang",
+      water: "Siram saat tanah kering sempurna",
+      humidity: "Rendah",
+      potSize: "10-15 cm"
+    }
+  },
+  {
+    id: 7,
+    name: "Rosemary",
+    category: "Tanaman Herbal",
+    price: 25000,
+    image: "https://images.unsplash.com/photo-1699652384624-4a01ab2d3185?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8cm9zZW1hcml8ZW58MHx8MHx8fDA%3D", // Ganti dengan gambar Rosemary asli
+    description: "Tanaman herbal aromatik, cocok untuk masakan dan wangi ruangan.",
+    care: {
+      light: "Cahaya matahari penuh",
+      water: "Siram teratur, jangan biarkan kering",
+      humidity: "Sedang",
+      potSize: "15-20 cm"
+    }
+  }
 ];
 
 export default products;
