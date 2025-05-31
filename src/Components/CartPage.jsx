@@ -1,8 +1,19 @@
 // src/components/CartPage.jsx
 import React from 'react';
 
-function CartPage({ cartItems, onUpdateQuantity, onRemoveItem,navigateTo }) {
-   const totalOverallPrice = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+function CartPage({ cartItems, onUpdateQuantity, onRemoveItem,navigateTo, showNotification }) {
+  const totalOverallPrice = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+  const handleUpdateQuantity = (productId, newQuantity) => {
+    onUpdateQuantity(productId, newQuantity);
+    showNotification('Kuantitas produk diperbarui!', 'info');
+  };
+
+  // ❤️ BARIS BARU: Fungsi lokal untuk hapus item dengan notifikasi
+  const handleRemoveItem = (productId, productName) => {
+    onRemoveItem(productId);
+    showNotification(`${productName} dihapus dari keranjang.`, 'info');
+  };
+
 
   return (
     <div className="container mx-auto p-4 md:p-8 bg-white shadow-md rounded-lg mt-8">
@@ -46,8 +57,8 @@ function CartPage({ cartItems, onUpdateQuantity, onRemoveItem,navigateTo }) {
                         type="number"
                         min="1"
                         value={item.quantity}
-                        onChange={(e) => onUpdateQuantity(item.id, parseInt(e.target.value))}
-                        className="w-16 p-2 border border-gray-300 rounded-md text-center focus:outline-none focus:ring-1 focus:ring-green-500"
+                        onChange={(e) => handleUpdateQuantity(item.id, parseInt(e.target.value))}
+                        className="w-16 p-2 border border-gray-300 rounded-md text-center focus:outline-none focus:ring-2 focus:ring-green-500"
                       />
                     </td>
                     <td className="py-3 px-6 text-right font-semibold">
@@ -55,7 +66,7 @@ function CartPage({ cartItems, onUpdateQuantity, onRemoveItem,navigateTo }) {
                     </td>
                     <td className="py-3 px-6 text-center">
                       <button
-                        onClick={() => onRemoveItem(item.id)}
+                        onClick={() => handleRemoveItem(item.id, item.name)}
                         className="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600 transition duration-200 text-xs"
                       >
                         Hapus

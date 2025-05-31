@@ -1,19 +1,48 @@
 // src/components/ProductCard.jsx
 import React from 'react';
+// ❤️ MODIFIKASI: Import FontAwesomeIcon dan ikon hati
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons'; // Ikon hati terisi
+import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons'; // Ikon hati kosong
 
-function ProductCard({ product, onAddToCart, navigateTo }) { // Menerima 'navigateTo'
-  
+// ❤️ MODIFIKASI: Tambahkan favoriteItems dan toggleFavorite sebagai props
+function ProductCard({ product, onAddToCart, navigateTo, favoriteItems, toggleFavorite }) {
+
+  // ❤️ BARIS BARU: Cek apakah produk ini ada di daftar favorit
+  const isFavorite = favoriteItems.some(item => item.id === product.id);
+
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 cursor-pointer">
-      {/* Tambahkan onClick ke div utama untuk navigasi */}
-      <div onClick={() => navigateTo('productDetail', product.id)}>
+    // ❤️ MODIFIKASI: Tambahkan relative untuk posisi ikon
+    <div className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 relative">
+      {/* ❤️ BARIS BARU: Tombol favorit */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation(); // Mencegah klik card ketika klik favorit
+          toggleFavorite(product);
+        }}
+        className={`absolute top-3 right-3 text-2xl z-10 transition-colors duration-200
+                   ${isFavorite ? 'text-red-500' : 'text-gray-300 hover:text-red-400'}`}
+      >
+        <FontAwesomeIcon icon={isFavorite ? solidHeart : regularHeart} />
+      </button>
+
+      {/* MODIFIKASI: Hapus onClick dari div ini, pindahkan ke img dan h3 */}
+      <div>
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-48 object-cover"
+          // ❤️ MODIFIKASI: Tambahkan cursor-pointer dan onClick ke img
+          className="w-full h-48 object-cover cursor-pointer"
+          onClick={() => navigateTo('productDetail', product.id)}
         />
         <div className="p-4">
-          <h3 className="text-lg font-semibold text-gray-800 mb-1">{product.name}</h3>
+          <h3
+            // ❤️ MODIFIKASI: Tambahkan cursor-pointer dan onClick ke h3
+            className="text-lg font-semibold text-gray-800 mb-1 cursor-pointer hover:text-green-600"
+            onClick={() => navigateTo('productDetail', product.id)}
+          >
+            {product.name}
+          </h3>
           <p className="text-green-600 font-bold text-xl mb-3">
             Rp {product.price.toLocaleString('id-ID')}
           </p>
@@ -26,6 +55,14 @@ function ProductCard({ product, onAddToCart, navigateTo }) { // Menerima 'naviga
             className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200"
         >
             Tambah ke Keranjang
+        </button>
+         <button
+          onClick={() => toggleFavorite(product)}
+          className={`text-2xl transition-colors duration-200
+                     ${isFavorite ? 'text-red-500' : 'text-gray-300 hover:text-red-400'}`}
+          aria-label={isFavorite ? "Hapus dari favorit" : "Tambah ke favorit"}
+        >
+          <FontAwesomeIcon icon={isFavorite ? solidHeart : regularHeart} />
         </button>
       </div>
     </div>

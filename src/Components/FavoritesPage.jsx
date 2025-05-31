@@ -3,7 +3,7 @@ import React from 'react';
 import ProductCard from './ProductCard'; // Import ProductCard untuk menampilkan item favorit
 
 // Menerima favoriteItems, onAddToCart, toggleFavorite, dan navigateTo sebagai props
-function FavoritesPage({ favoriteItems, onAddToCart, toggleFavorite, navigateTo }) {
+function FavoritesPage({ favoriteItems, onAddToCart, toggleFavorite, navigateTo, showNotification }) {
   return (
     <section className="container mx-auto p-4 md:p-8 mt-8 bg-white shadow-md rounded-lg">
       <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Produk Favorit Anda</h2>
@@ -26,8 +26,9 @@ function FavoritesPage({ favoriteItems, onAddToCart, toggleFavorite, navigateTo 
               product={product}
               onAddToCart={onAddToCart}
               navigateTo={navigateTo}
-              favoriteItems={favoriteItems} // Teruskan favoriteItems ke ProductCard
-              toggleFavorite={toggleFavorite} // Teruskan toggleFavorite ke ProductCard
+              favoriteItems={favoriteItems} 
+              toggleFavorite={toggleFavorite}
+              showNotification={showNotification} 
             />
           ))}
         </div>

@@ -4,7 +4,7 @@ import productsData from '../data/products';
 import ProductCard from './ProductCard';
 
 
-function ProductList({ onAddToCart, navigateTo }) {
+function ProductList({ onAddToCart, navigateTo, favoriteItems, toggleFavorite}) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Semua'); // State untuk kategori yang dipilih
   const [filteredProducts, setFilteredProducts] = useState(productsData);
@@ -70,6 +70,8 @@ function ProductList({ onAddToCart, navigateTo }) {
               product={product}
               onAddToCart={onAddToCart}
               navigateTo={navigateTo}
+              favoriteItems={favoriteItems} 
+              toggleFavorite={toggleFavorite}
             />
           ))
         )}

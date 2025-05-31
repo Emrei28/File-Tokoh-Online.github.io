@@ -1,5 +1,7 @@
 // src/components/Footer.jsx
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFacebookF, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
 
 function Footer() {
   const year = new Date().getFullYear(); // Ambil tahun saat ini
@@ -23,9 +25,9 @@ function Footer() {
         <div>
           <h4 className="font-semibold text-lg mb-2">Ikuti Kami</h4>
           <div className="flex justify-center md:justify-start space-x-4">
-            <a href="#" className="text-green-200 hover:text-white"><i className="fab fa-facebook-f"></i> Facebook</a>
-            <a href="#" className="text-green-200 hover:text-white"><i className="fab fa-instagram"></i> Instagram</a>
-            <a href="#" className="text-green-200 hover:text-white"><i className="fab fa-twitter"></i> Twitter</a>
+            <a href="#" className="text-green-200 hover:text-white"><FontAwesomeIcon icon={faFacebookF} /> Facebook</a>
+            <a href="#" className="text-green-200 hover:text-white"><FontAwesomeIcon icon={faInstagram} /> Instagram</a>
+            <a href="#" className="text-green-200 hover:text-white"><FontAwesomeIcon icon={faTwitter} /> Twitter</a>
           </div>
         </div>
       </div>

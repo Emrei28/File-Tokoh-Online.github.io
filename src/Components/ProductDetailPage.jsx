@@ -1,13 +1,17 @@
 // src/components/ProductDetailPage.jsx
 import React, { useState } from 'react'; // Import useState
 import products from '../data/products';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons'; // Ikon hati terisi
+import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons'; // Ikon hati kosong
 
 
-function ProductDetailPage({ productId, onAddToCart, navigateTo }) {
+function ProductDetailPage({ productId, onAddToCart, navigateTo, favoriteItems, toggleFavorite}) {
   const product = products.find(p => p.id === productId);
 
-  // State baru untuk menyimpan quantity
-  const [quantity, setQuantity] = useState(1); // Default quantity adalah 1
+  const [quantity, setQuantity] = useState(1);
+
+  const isFavorite = favoriteItems.some(item => item.id === product?.id);
 
   // Jika produk tidak ditemukan
   if (!product) {
@@ -18,7 +22,7 @@ function ProductDetailPage({ productId, onAddToCart, navigateTo }) {
           onClick={() => navigateTo('home')}
           className="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition duration-200"
         >
-          Kembali ke Berandaz
+          Kembali ke Beranda
         </button>
       </div>
     );
@@ -58,7 +62,16 @@ function ProductDetailPage({ productId, onAddToCart, navigateTo }) {
           />
         </div>
         <div className="md:w-1/2">
-          <h1 className="text-4xl font-bold text-gray-800 mb-3">{product.name}</h1>
+          <h1 className="text-4xl font-bold text-gray-800 mb-3 flex items-center">
+            {product.name}
+            <button
+              onClick={() => toggleFavorite(product)}
+              className={`ml-4 text-3xl transition-colors duration-200
+                         ${isFavorite ? 'text-red-500' : 'text-gray-300 hover:text-red-400'}`}
+            >
+              <FontAwesomeIcon icon={isFavorite ? solidHeart : regularHeart} />
+            </button>
+          </h1>
           <p className="text-green-600 font-bold text-4xl mb-6">
             Rp {product.price.toLocaleString('id-ID')}
           </p>
