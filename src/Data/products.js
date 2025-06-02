@@ -63,6 +63,7 @@ const products = [
     category: "Indoor Plants",
     price: 90000,
     image:  "https://images.unsplash.com/photo-1538998073820-4dfa76300194?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Zmxvd2VyfGVufDB8fDB8fHww",
+    description: "Bunga tropis yang cerah dan indah, cocok untuk taman atau pot.",
     care: {
       light: "Cahaya rendah hingga sedang",
       water: "Siram teratur, jaga tanah tetap lembab",

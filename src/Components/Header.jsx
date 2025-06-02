@@ -15,7 +15,7 @@ function Header({ cartItemCount, navigateTo, favoriteItemCount }) {
 
   return (
     <header className="bg-white shadow-md p-4 flex justify-between items-center fixed w-full top-0 z-20"> 
-       <div className="text-2xl font-bold text-green-700 cursor-pointer" onClick={() => handleNavigationClick('home')}>
+       <div className="text-2xl font-bold text-green-700 cursor-pointer" onClick={() => handleNavigationClick('landing')}>
         Toko Tanaman Hias Lokal
       </div>
       
@@ -31,10 +31,10 @@ function Header({ cartItemCount, navigateTo, favoriteItemCount }) {
 
        <nav className="hidden md:block">
         <ul className="flex space-x-6">
-          <li><a href="#" onClick={() => navigateTo('home')} className="text-gray-700 hover:text-green-600 font-semibold">Beranda</a></li>
-          <li><a href="#" onClick={() => navigateTo('home')} className="text-gray-700 hover:text-green-600 font-semibold">Produk</a></li>
-          <li><a href="#" onClick={() => navigateTo('about')} className="text-gray-700 hover:text-green-600 font-semibold">Tentang Kami</a></li>
-          <li><a href="#" onClick={() => navigateTo('contact')} className="text-gray-700 hover:text-green-600 font-semibold">Kontak</a></li>
+          <li><a href="#" onClick={() => handleNavigationClick('landing')} className="text-gray-700 hover:text-green-600 font-semibold">Beranda</a></li>
+          <li><a href="#" onClick={() => handleNavigationClick('products')} className="text-gray-700 hover:text-green-600 font-semibold">Produk</a></li>
+          <li><a href="#" onClick={() => handleNavigationClick('about')} className="text-gray-700 hover:text-green-600 font-semibold">Tentang Kami</a></li>
+          <li><a href="#" onClick={() => handleNavigationClick('contact')} className="text-gray-700 hover:text-green-600 font-semibold">Kontak</a></li>
           <li>
             <a
               href="#"
@@ -84,8 +84,8 @@ function Header({ cartItemCount, navigateTo, favoriteItemCount }) {
         </button>
 
         <ul className="flex flex-col space-y-6 text-2xl">
-          <li><a href="#" onClick={() => handleNavigationClick('home')} className="text-gray-700 hover:text-green-600 font-semibold">Beranda</a></li>
-          <li><a href="#" onClick={() => handleNavigationClick('home')} className="text-gray-700 hover:text-green-600 font-semibold">Produk</a></li>
+          <li><a href="#" onClick={() => handleNavigationClick('landing')} className="text-gray-700 hover:text-green-600 font-semibold">Beranda</a></li>
+          <li><a href="#" onClick={() => handleNavigationClick('products')} className="text-gray-700 hover:text-green-600 font-semibold">Produk</a></li>
           <li><a href="#" onClick={() => handleNavigationClick('about')} className="text-gray-700 hover:text-green-600 font-semibold">Tentang Kami</a></li>
           <li><a href="#" onClick={() => handleNavigationClick('contact')} className="text-gray-700 hover:text-green-600 font-semibold">Kontak</a></li>
           <li>

@@ -23,7 +23,7 @@ function CartPage({ cartItems, onUpdateQuantity, onRemoveItem,navigateTo, showNo
         <div className="text-center text-gray-600 text-lg">
           <p className="text-center text-gray-600 text-lg">Keranjang Anda masih kosong. Yuk, cari tanaman impian!</p>
           <button
-            onClick={() => navigateTo('home')}
+            onClick={() => navigateTo('products')}
             className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200"
           >
             Mulai Belanja
@@ -89,7 +89,7 @@ function CartPage({ cartItems, onUpdateQuantity, onRemoveItem,navigateTo, showNo
           {/* Tombol Lanjut ke Pembayaran / Checkout */}
           <div className="flex justify-between items-center mt-6">
             <button
-              onClick={() => navigateTo('home')}
+              onClick={() => navigateTo('products')}
               className="bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition duration-200"
             >
               &larr; Lanjutkan Belanja

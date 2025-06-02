@@ -1,15 +1,16 @@
 // src/components/ProductDetailPage.jsx
 import React, { useState } from 'react'; // Import useState
-import products from '../data/products';
+import productsData from '../data/products';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons'; // Ikon hati terisi
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons'; // Ikon hati kosong
 
 
 function ProductDetailPage({ productId, onAddToCart, navigateTo, favoriteItems, toggleFavorite}) {
-  const product = products.find(p => p.id === productId);
+  const product = productsData.find(p => p.id === productId);
 
   const [quantity, setQuantity] = useState(1);
+  
 
   const isFavorite = favoriteItems.some(item => item.id === product?.id);
 
@@ -19,7 +20,7 @@ function ProductDetailPage({ productId, onAddToCart, navigateTo, favoriteItems, 
       <div className="container mx-auto p-4 md:p-8 mt-8 text-center text-red-600">
         Produk tidak ditemukan.
         <button
-          onClick={() => navigateTo('home')}
+          onClick={() => navigateTo('products')}
           className="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition duration-200"
         >
           Kembali ke Beranda
@@ -47,7 +48,7 @@ function ProductDetailPage({ productId, onAddToCart, navigateTo, favoriteItems, 
   return (
     <div className="container mx-auto p-4 md:p-8 bg-white shadow-md rounded-lg mt-8">
       <button
-        onClick={() => navigateTo('home')}
+        onClick={() => navigateTo('products')}
         className="mb-6 bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition duration-200"
       >
         &larr; Kembali ke Daftar Produk

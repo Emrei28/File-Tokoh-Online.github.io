@@ -1,21 +1,22 @@
 // src/App.jsx
-import { useState, useEffect } from 'react'; // Import useState
-import Header from './Components/Header'; // Import komponen Header
-import ProductList from './Components/ProductList';
-import CartPage from './Components/CartPage';
-import ProductDetailPage from './Components/ProductDetailPage';
-import Footer from './Components/Footer';
-import AboutPage from './Components/AboutPage';
-import ContactPage from './Components/ContactPage';
-import FavoritesPage from './Components/FavoritesPage';
-import Notification from './Components/Notification';
+import { useState, useEffect } from 'react';
+import Header from './components/Header'; // Huruf kecil
+import ProductList from './components/ProductList'; // Huruf kecil
+import CartPage from './components/CartPage'; // Huruf kecil
+import ProductDetailPage from './components/ProductDetailPage'; // Huruf kecil
+import Footer from './components/Footer'; // Huruf kecil
+import AboutPage from './components/AboutPage'; // Huruf kecil
+import ContactPage from './components/ContactPage'; // Huruf kecil
+import FavoritesPage from './components/FavoritesPage'; // Huruf kecil
+import Notification from './components/Notification'; // Huruf kecil
+import LandingPage from './components/LandingPage'; // Huruf kecil
 
 import './App.css'
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
-  const [currentPage, setCurrentPage] = useState('home');
-  const [selectedProductId, setSelectedProductId] = useState(null); // State untuk menyimpan ID produk yang dipilih
+  const [currentPage, setCurrentPage] = useState('landing');
+  const [selectedProductId, setSelectedProductId] = useState(null);; // State untuk menyimpan ID produk yang dipilih
   const [favoriteItems, setFavoriteItems] = useState(() => {
     // ❤️ BARIS BARU: Coba muat dari localStorage saat inisialisasi
     const savedFavorites = localStorage.getItem('favoriteItems');
@@ -46,9 +47,11 @@ function App() {
   };
 
    const navigateTo = (page, productId = null) => {
-    setCurrentPage(page);
-    setSelectedProductId(productId);
-  };
+  setCurrentPage(page);
+  setSelectedProductId(productId);
+  // Scroll ke atas halaman saat navigasi
+  window.scrollTo(0, 0);
+};
 
   const addToCart = (productToAdd, quantity = 1) => { // Default quantity = 1 jika tidak disediakan
     setCartItems(prevItems => {
@@ -116,7 +119,9 @@ function App() {
          favoriteItemCount={favoriteItems.length} // Ini yang meneruskan jumlah favorit (berupa angka)
       />
       <main className="flex-grow pt-20 pb-8">
-        {currentPage === 'home' && (
+
+        {currentPage === 'landing' && <LandingPage navigateTo={navigateTo} />}
+        {currentPage === 'products' && (
           <>
             <h1 className="text-3xl font-bold text-center text-gray-800 mt-8 mb-4">Selamat Datang di Toko Tanaman Hias Lokal!</h1>
             <p className="text-lg text-center text-gray-600 mb-8">Temukan koleksi tanaman hijau terbaik untuk rumah Anda.</p>

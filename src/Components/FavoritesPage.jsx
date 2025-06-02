@@ -12,7 +12,7 @@ function FavoritesPage({ favoriteItems, onAddToCart, toggleFavorite, navigateTo,
         <div className="text-center text-gray-600 text-lg">
           <p className="mb-4">Anda belum memiliki produk favorit.</p>
           <button
-            onClick={() => navigateTo('home')}
+            onClick={() => navigateTo('products')}
             className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200"
           >
             Jelajahi Produk

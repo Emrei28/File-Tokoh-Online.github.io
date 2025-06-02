@@ -8,13 +8,17 @@ import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons'; /
 // ❤️ MODIFIKASI: Tambahkan favoriteItems dan toggleFavorite sebagai props
 function ProductCard({ product, onAddToCart, navigateTo, favoriteItems, toggleFavorite }) {
 
-  // ❤️ BARIS BARU: Cek apakah produk ini ada di daftar favorit
+  if (!product) {
+    console.warn("ProductCard received an undefined product prop.");
+    return null; 
+  }
+
   const isFavorite = favoriteItems.some(item => item.id === product.id);
 
   return (
-    // ❤️ MODIFIKASI: Tambahkan relative untuk posisi ikon
+   
     <div className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 relative">
-      {/* ❤️ BARIS BARU: Tombol favorit */}
+    
       <button
         onClick={(e) => {
           e.stopPropagation(); // Mencegah klik card ketika klik favorit

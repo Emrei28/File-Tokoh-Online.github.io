@@ -6,5 +6,9 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(),tailwindcss()],
   base: '/',
+  server: {
+    port: 5173, // Pastikan port sesuai dengan yang Anda gunakan
+    open: true, // Buka browser otomatis saat server berjalan
+  },
 })
 
