@@ -12,7 +12,7 @@ function LandingPage({ navigateTo }) {
         }}
       ></div>
 
-      <div className="relative z-10 text-center p-4 sm:p-6 md:p-8 bg-black bg-opacity-50 rounded-lg shadow-2xl max-w-4xl mx-auto mb-8"> 
+      <div className="relative z-10 text-center p-4 sm:p-6 md:p-8 bg-black bg-opacity-50 rounded-lg shadow-2xl max-w-4xl mx-auto mb-8 mt-20"> 
         <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold mb-4 animate-fade-in-down">
           Temukan Keindahan Hijau untuk Ruangan Anda
         </h1>
