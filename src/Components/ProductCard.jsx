@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons'; // Ikon hati terisi
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons'; // Ikon hati kosong
 
-// ❤️ MODIFIKASI: Tambahkan favoriteItems dan toggleFavorite sebagai props
+
 function ProductCard({ product, onAddToCart, navigateTo, favoriteItems, toggleFavorite }) {
 
   if (!product) {
@@ -17,15 +17,16 @@ function ProductCard({ product, onAddToCart, navigateTo, favoriteItems, toggleFa
 
   return (
    
-    <div className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 relative">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-xl hover:-translate-y-1 relative">
     
       <button
         onClick={(e) => {
           e.stopPropagation(); // Mencegah klik card ketika klik favorit
           toggleFavorite(product);
         }}
-        className={`absolute top-3 right-3 text-2xl z-10 transition-colors duration-200
+        className={`absolute top-4 right-4 text-3xl z-20 transition-colors duration-200
                    ${isFavorite ? 'text-red-500' : 'text-gray-300 hover:text-red-400'}`}
+        aria-label={isFavorite ? "Hapus dari Favorit" : "Tambah ke Favorit"}
       >
         <FontAwesomeIcon icon={isFavorite ? solidHeart : regularHeart} />
       </button>
@@ -35,19 +36,18 @@ function ProductCard({ product, onAddToCart, navigateTo, favoriteItems, toggleFa
         <img
           src={product.image}
           alt={product.name}
-          // ❤️ MODIFIKASI: Tambahkan cursor-pointer dan onClick ke img
-          className="w-full h-48 object-cover cursor-pointer"
+          className="w-full h-60 object-cover cursor-pointer border-b border-gray-100"
           onClick={() => navigateTo('productDetail', product.id)}
         />
-        <div className="p-4">
+
+        <div className="p-4 flex flex-col justify-between h-auto">
           <h3
-            // ❤️ MODIFIKASI: Tambahkan cursor-pointer dan onClick ke h3
-            className="text-lg font-semibold text-gray-800 mb-1 cursor-pointer hover:text-green-600"
+            className="text-lg font-semibold text-gray-800 mb-2 cursor-pointer hover:text-green-600 transition duration-200"
             onClick={() => navigateTo('productDetail', product.id)}
           >
             {product.name}
           </h3>
-          <p className="text-green-600 font-bold text-xl mb-3">
+          <p className="text-green-700 font-bold text-2xl mb-4">
             Rp {product.price.toLocaleString('id-ID')}
           </p>
         </div>
@@ -56,7 +56,7 @@ function ProductCard({ product, onAddToCart, navigateTo, favoriteItems, toggleFa
       <div className="p-4 pt-0"> {/* Tambahkan padding atas 0 */}
         <button
             onClick={() => onAddToCart(product)}
-            className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200"
+            className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200 mt-auto"
         >
             Tambah ke Keranjang
         </button>

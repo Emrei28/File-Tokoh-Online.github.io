@@ -14,7 +14,7 @@ function Header({ cartItemCount, navigateTo, favoriteItemCount }) {
   };
 
   return (
-    <header className="bg-white shadow-md p-4 flex justify-between items-center fixed w-full top-0 z-20"> 
+    <header className="bg-white shadow-md p-4 flex justify-between items-center fixed w-full top-0 z-21"> 
        <div className="text-2xl font-bold text-green-700 cursor-pointer" onClick={() => handleNavigationClick('landing')}>
         Toko Tanaman Hias Lokal
       </div>
