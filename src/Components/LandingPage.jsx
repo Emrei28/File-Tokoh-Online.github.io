@@ -3,7 +3,7 @@ import React from 'react';
 
 function LandingPage({ navigateTo }) {
   return (
-    <div className="relative w-full h-screen flex flex-col items-center justify-center text-white overflow-hidden pt-16 sm:pt-20"> 
+    <div className="relative w-full h-screen flex flex-col items-center justify-center text-white pt-16 sm:pt-20"> 
       <div
         className="absolute inset-0 bg-cover bg-center brightness-75 transition-all duration-700 ease-in-out supports-[background-attachment:fixed]:bg-fixed"
         style={{
@@ -30,7 +30,7 @@ function LandingPage({ navigateTo }) {
         </button>
       </div>
 
-      <section className="relative z-10 w-full bg-white p-8 sm:p-12 md:p-16 text-gray-800 shadow-inner mt-auto">
+      <section className="relative z-10 w-full bg-white p-8 max-sm:pb-12 md:p-16 text-gray-800 shadow-inner mt-auto">
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 text-center">
           <div className="flex flex-col items-center">
             <img
