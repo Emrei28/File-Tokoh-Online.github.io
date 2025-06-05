@@ -45,13 +45,11 @@ function ProductList({ onAddToCart, navigateTo, favoriteItems, toggleFavorite}) 
         results.sort((a, b) => b.name.localeCompare(a.name));
         break;
       default:
-        // Tidak ada pengurutan default, biarkan sesuai urutan data asli atau hasil filter
-        // Atau bisa juga diurutkan berdasarkan ID jika ingin konsisten: results.sort((a, b) => a.id - b.id);
         break;
     }
 
     setFilteredProducts(results);
-  }, [searchQuery, selectedCategory, sortOption]); // Bergantung pada searchQuery DAN selectedCategory
+  }, [searchQuery, selectedCategory, sortOption]); 
 
   return (
     <section className="container mx-auto p-4 md:p-8 mt-16 sm:mt-20">
@@ -85,8 +83,8 @@ function ProductList({ onAddToCart, navigateTo, favoriteItems, toggleFavorite}) 
           onChange={(e) => setSortOption(e.target.value)}
         >
           <option value="default">Urutkan Berdasarkan...</option>
-          <option value="price-asc">Harga: Terendah ke Tertinggi</option>
-          <option value="price-desc">Harga: Tertinggi ke Terendah</option>
+          <option value="price-asc">Harga: Tertinggi ke Terendah</option>
+          <option value="price-desc">Harga: Terendah ke Tertinggi</option>
           <option value="name-asc">Nama: A - Z</option>
           <option value="name-desc">Nama: Z - A</option>
         </select>
