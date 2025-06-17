@@ -33,18 +33,19 @@ function ProductList({ onAddToCart, navigateTo, favoriteItems, toggleFavorite}) 
 
     switch (sortOption) {
       case 'price-asc': // Harga terendah ke tertinggi
-        results.sort((a, b) => a.price - b.price);
+        results = [...results].sort((a, b) => a.price - b.price);
         break;
       case 'price-desc': // Harga tertinggi ke terendah
-        results.sort((a, b) => b.price - a.price);
+        results = [...results].sort((a, b) => b.price - a.price);
         break;
-      case 'name-asc': // Nama A-Z
-        results.sort((a, b) => a.name.localeCompare(b.name));
+      case 'name-asc': // ❤️ BARIS BARU: Nama: A - Z
+        results = [...results].sort((a, b) => a.name.localeCompare(b.name));
         break;
-      case 'name-desc': // Nama Z-A
-        results.sort((a, b) => b.name.localeCompare(a.name));
+      case 'name-desc': // ❤️ BARIS BARU: Nama: Z - A
+        results = [...results].sort((a, b) => b.name.localeCompare(a.name));
         break;
       default:
+        // Tidak perlu sorting tambahan jika default
         break;
     }
 
@@ -61,7 +62,7 @@ function ProductList({ onAddToCart, navigateTo, favoriteItems, toggleFavorite}) 
         <input
           type="text"
           placeholder="Cari tanaman..."
-          className="w-full max-w-sm p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
+          className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 flex-grow text-lg" 
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
@@ -83,8 +84,8 @@ function ProductList({ onAddToCart, navigateTo, favoriteItems, toggleFavorite}) 
           onChange={(e) => setSortOption(e.target.value)}
         >
           <option value="default">Urutkan Berdasarkan...</option>
-          <option value="price-asc">Harga: Tertinggi ke Terendah</option>
-          <option value="price-desc">Harga: Terendah ke Tertinggi</option>
+          <option value="price-asc">Harga: Terendah ke Tertinggi</option>
+          <option value="price-desc">Harga: Tertinggi ke Terendah</option>
           <option value="name-asc">Nama: A - Z</option>
           <option value="name-desc">Nama: Z - A</option>
         </select>
