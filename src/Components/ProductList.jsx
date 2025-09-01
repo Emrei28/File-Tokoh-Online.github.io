@@ -1,27 +1,40 @@
-// src/components/ProductList.jsx
-import { useState, useEffect } from 'react';
-import productsData from '../data/products';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import ProductCard from './ProductCard';
 
-
-function ProductList({ onAddToCart, navigateTo, favoriteItems, toggleFavorite}) {
+function ProductList({ onAddToCart, navigateTo, favoriteItems, toggleFavorite }) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Semua'); 
+  const [selectedCategory, setSelectedCategory] = useState('Semua');
   const [sortOption, setSortOption] = useState('default');
-  const [filteredProducts, setFilteredProducts] = useState(productsData);
+  const [products, setProducts] = useState([]); // State utama dari backend
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Dapatkan daftar kategori unik dari data produk
-  const categories = ['Semua', ...new Set(productsData.map(product => product.category))];
+  const [categories, setCategories] = useState(['Semua']);
 
   useEffect(() => {
-    let results = productsData;
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('https://tokoh-online-server.vercel.app/api/products');
+        setProducts(response.data);
+        const uniqueCategories = ['Semua', ...new Set(response.data.map(product => product.category))];
+        setCategories(uniqueCategories);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching products:', err);
+        setError('Gagal memuat data tanaman. Coba lagi nanti.');
+        setLoading(false);
+      }
+    };
 
-    // Filter berdasarkan kategori
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    let results = [...products];
     if (selectedCategory !== 'Semua') {
       results = results.filter(product => product.category === selectedCategory);
     }
-
-    // Filter berdasarkan pencarian
     if (searchQuery) {
       const lowercasedQuery = searchQuery.toLowerCase();
       results = results.filter(product =>
@@ -30,44 +43,49 @@ function ProductList({ onAddToCart, navigateTo, favoriteItems, toggleFavorite}) 
         (product.category && product.category.toLowerCase().includes(lowercasedQuery))
       );
     }
-
     switch (sortOption) {
-      case 'price-asc': // Harga terendah ke tertinggi
-        results = [...results].sort((a, b) => a.price - b.price);
+      case 'price-asc':
+        results.sort((a, b) => a.price - b.price);
         break;
-      case 'price-desc': // Harga tertinggi ke terendah
-        results = [...results].sort((a, b) => b.price - a.price);
+      case 'price-desc':
+        results.sort((a, b) => b.price - a.price);
         break;
-      case 'name-asc': // ❤️ BARIS BARU: Nama: A - Z
-        results = [...results].sort((a, b) => a.name.localeCompare(b.name));
+      case 'name-asc':
+        results.sort((a, b) => a.name.localeCompare(b.name));
         break;
-      case 'name-desc': // ❤️ BARIS BARU: Nama: Z - A
-        results = [...results].sort((a, b) => b.name.localeCompare(a.name));
+      case 'name-desc':
+        results.sort((a, b) => b.name.localeCompare(b.name));
         break;
       default:
-        // Tidak perlu sorting tambahan jika default
         break;
     }
+  }, [searchQuery, selectedCategory, sortOption, products]);
 
-    setFilteredProducts(results);
-  }, [searchQuery, selectedCategory, sortOption]); 
+  // Perubahan hanya di bagian ini
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-green-500"></div>
+        <p className="ml-4 text-gray-600 text-xl font-semibold">Memuat tanaman...</p>
+      </div>
+    );
+  }
+
+  if (error) return <p className="text-center text-red-600 text-xl py-10">{error}</p>;
 
   return (
     <section className="container mx-auto p-4 md:p-8 mt-16 sm:mt-20">
       <h2 className="text-4xl font-extrabold text-gray-800 mb-8 text-center">Jelajahi Koleksi Tanaman Kami</h2>
 
-      {/* Kolom Pencarian & Filter Kategori */}
       <div className="flex flex-col md:flex-row gap-4 mb-8 items-center justify-center">
-        {/* Input Pencarian */}
         <input
           type="text"
           placeholder="Cari tanaman..."
-          className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 flex-grow text-lg" 
+          className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 flex-grow text-lg"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
 
-        {/* Dropdown Filter Kategori */}
         <select
           className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 md:w-auto w-full text-lg"
           value={selectedCategory}
@@ -79,7 +97,7 @@ function ProductList({ onAddToCart, navigateTo, favoriteItems, toggleFavorite}) 
         </select>
 
         <select
-          className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 md:w-auto w-full text-lg" // ❤️ text-lg
+          className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 md:w-auto w-full text-lg"
           value={sortOption}
           onChange={(e) => setSortOption(e.target.value)}
         >
@@ -92,24 +110,40 @@ function ProductList({ onAddToCart, navigateTo, favoriteItems, toggleFavorite}) 
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {filteredProducts.length === 0 ? (
-          <p className="col-span-full text-center text-gray-600 text-xl py-10">Tidak ada tanaman yang ditemukan dengan kata kunci "{searchQuery}" dan kategori "{selectedCategory}".</p>
+        {products.length === 0 ? (
+          <p className="col-span-full text-center text-gray-600 text-xl py-10">Tidak ada tanaman yang ditemukan.</p>
         ) : (
-          filteredProducts.map(product => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onAddToCart={onAddToCart}
-              navigateTo={navigateTo}
-              favoriteItems={favoriteItems} 
-              toggleFavorite={toggleFavorite}
-            />
-          ))
+          products
+            .filter(product =>
+              (selectedCategory === 'Semua' || product.category === selectedCategory) &&
+              (!searchQuery ||
+                (product.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  product.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  product.category?.toLowerCase().includes(searchQuery.toLowerCase())))
+            )
+            .sort((a, b) => {
+              switch (sortOption) {
+                case 'price-asc': return a.price - b.price;
+                case 'price-desc': return b.price - a.price;
+                case 'name-asc': return a.name.localeCompare(b.name);
+                case 'name-desc': return b.name.localeCompare(b.name);
+                default: return 0;
+              }
+            })
+            .map(product => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={onAddToCart}
+                navigateTo={navigateTo}
+                favoriteItems={favoriteItems}
+                toggleFavorite={toggleFavorite}
+              />
+            ))
         )}
       </div>
     </section>
   );
 }
-
 
 export default ProductList;

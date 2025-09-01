@@ -1,9 +1,10 @@
-// src/components/Footer.jsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookF, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
 
 function Footer() {
+  const navigate = useNavigate();
   const year = new Date().getFullYear(); // Ambil tahun saat ini
 
   return (
@@ -16,10 +17,38 @@ function Footer() {
         <div className="mb-4 md:mb-0">
           <h4 className="font-semibold text-lg mb-2">Navigasi Cepat</h4>
           <ul className="space-y-1">
-            <li><a href="#" className="text-green-200 hover:text-white transition duration-200">Beranda</a></li>
-            <li><a href="#" className="text-green-200 hover:text-white transition duration-200">Produk</a></li>
-            <li><a href="#" className="text-green-200 hover:text-white transition duration-200">Tentang Kami</a></li>
-            <li><a href="#" className="text-green-200 hover:text-white transition duration-200">Kontak</a></li>
+            <li>
+              <button
+                onClick={() => navigate('/')}
+                className="text-green-200 hover:text-white transition duration-200"
+              >
+                Beranda
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => navigate('/products')}
+                className="text-green-200 hover:text-white transition duration-200"
+              >
+                Produk
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => navigate('/about')}
+                className="text-green-200 hover:text-white transition duration-200"
+              >
+                Tentang Kami
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => navigate('/contact')}
+                className="text-green-200 hover:text-white transition duration-200"
+              >
+                Kontak
+              </button>
+            </li>
           </ul>
         </div>
         <div>
@@ -32,7 +61,7 @@ function Footer() {
         </div>
       </div>
       <div className="border-t border-green-700 mt-6 pt-4 text-center text-sm text-green-300">
-        &copy; {year}{<a href= 'https://www.instagram.com/_emreiii?igsh=MWpkMnNkZGI4azlvaA==' style={{color: 'black'}}> @MReihan</a>} Toko Tanaman Hias Lokal. Semua Hak Dilindungi.
+        &copy; {year} <a href='https://www.instagram.com/_emreiii?igsh=MWpkMnNkZGI4azlvaA==' style={{color: 'black'}}>@MReihan</a> Toko Tanaman Hias Lokal. Semua Hak Dilindungi.
       </div>
     </footer>
   );

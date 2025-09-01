@@ -1,178 +1,241 @@
-// src/App.jsx
+// App.jsx
 import { useState, useEffect } from 'react';
-import Header from './components/Header'; // Huruf kecil
-import ProductList from './components/ProductList'; // Huruf kecil
-import CartPage from './components/CartPage'; // Huruf kecil
-import ProductDetailPage from './components/ProductDetailPage'; // Huruf kecil
-import Footer from './components/Footer'; // Huruf kecil
-import AboutPage from './components/AboutPage'; // Huruf kecil
-import ContactPage from './components/ContactPage'; // Huruf kecil
-import FavoritesPage from './components/FavoritesPage'; // Huruf kecil
-import Notification from './components/Notification'; // Huruf kecil
-import LandingPage from './components/LandingPage'; // Huruf kecil
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import Header from './components/Header';
+import ProductList from './components/ProductList';
+import CartPage from './components/CartPage';
+import ProductDetailPage from './components/ProductDetailPage';
+import Footer from './components/Footer';
+import AboutPage from './components/AboutPage';
+import ContactPage from './components/ContactPage';
+import FavoritesPage from './components/FavoritesPage';
+import Notification from './components/Notification';
+import LandingPage from './components/LandingPage';
+import CheckoutPage from './components/CheckoutPage';
+import axios from 'axios';
+import LoginPage from './components/LoginPage'; // <--- Tambahkan impor LoginPage
 
-import './App.css'
+import './App.css';
+
+// Atur URL dasar untuk semua permintaan API
+axios.defaults.baseURL = 'https://tokoh-online-server.vercel.app';
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
-  const [currentPage, setCurrentPage] = useState('landing');
-  const [selectedProductId, setSelectedProductId] = useState(null);; // State untuk menyimpan ID produk yang dipilih
   const [favoriteItems, setFavoriteItems] = useState(() => {
-    // ❤️ BARIS BARU: Coba muat dari localStorage saat inisialisasi
     const savedFavorites = localStorage.getItem('favoriteItems');
-    try { // ❤️ BARIS BARU: Tambahkan try-catch untuk penanganan error JSON.parse
-        return savedFavorites ? JSON.parse(savedFavorites) : [];
+    try {
+      return savedFavorites ? JSON.parse(savedFavorites) : [];
     } catch (e) {
-        console.error("Failed to parse favoriteItems from localStorage", e);
-        return [];
+      console.error("Failed to parse favoriteItems from localStorage", e);
+      return [];
     }
   });
-
   const [notification, setNotification] = useState({
     message: '',
-    type: '', // 'success', 'error', 'info', 'warning'
+    type: '',
     isVisible: false,
   });
+  const [refresh, setRefresh] = useState(false);
+
+  // --- Start: Perubahan untuk Autentikasi ---
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   
+  // Fungsi untuk menangani login yang berhasil
+  const handleLoginSuccess = (newToken, newUser) => {
+    setToken(newToken);
+    setUser(newUser);
+    // Set header Authorization global agar setiap request menyertakan token
+    axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+    refreshCart(); // Perbarui keranjang setelah login
+  };
+
+  // Fungsi untuk menangani logout
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setToken(null);
+    setUser(null);
+    // Hapus header Authorization saat logout
+    delete axios.defaults.headers.common['Authorization'];
+    showNotification('Anda telah keluar dari akun.', 'info');
+    // Mungkin Anda ingin mengosongkan keranjang di sini juga
+    setCartItems([]);
+  };
+
+  useEffect(() => {
+    // Cek localStorage saat aplikasi pertama kali dimuat
+    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+
+    if (storedToken && storedUser) {
+      setToken(storedToken);
+      setUser(JSON.parse(storedUser));
+      axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+    }
+    
+    // Perbarui keranjang saat token atau user berubah
+    const fetchCartItems = async () => {
+      try {
+        const response = await axios.get('/api/cart');
+        setCartItems(response.data);
+      } catch (error) {
+        console.error('Error fetching cart:', error);
+        // Tangani error, misal token kadaluarsa
+        if (error.response && error.response.status === 403) {
+            handleLogout();
+        }
+      }
+    };
+    fetchCartItems();
+
+  }, [token, refresh]); // Tambahkan `token` sebagai dependency
+
+  // --- End: Perubahan untuk Autentikasi ---
+
   useEffect(() => {
     localStorage.setItem('favoriteItems', JSON.stringify(favoriteItems));
   }, [favoriteItems]);
 
-  const showNotification = (message, type = 'info') => {
+  const showNotification = (message, type = 'success') => {
     setNotification({ message, type, isVisible: true });
+    setTimeout(() => {
+      setNotification({ message: '', type: '', isVisible: false });
+    }, 3000);
   };
 
-  const hideNotification = () => {
-    setNotification(prev => ({ ...prev, isVisible: false }));
+  const refreshCart = () => {
+    setRefresh(prev => !prev);
   };
+  
+  const addToCart = async (productToAdd, quantity = 1) => {
+    try {
+      // Sekarang kita tidak perlu mencari item di state lokal lagi,
+      // cukup kirim data ke backend, backend yang akan menentukan apakah akan menambah atau memperbarui.
+      const response = await axios.post('/api/cart', {
+        product_id: productToAdd.id,
+        quantity: quantity,
+      });
 
-   const navigateTo = (page, productId = null) => {
-  setCurrentPage(page);
-  setSelectedProductId(productId);
-  // Scroll ke atas halaman saat navigasi
-  window.scrollTo(0, 0);
-};
+      showNotification(`${quantity} ${productToAdd.name} berhasil ditambahkan ke keranjang!`, 'success');
 
-  const addToCart = (productToAdd, quantity = 1) => { // Default quantity = 1 jika tidak disediakan
-    setCartItems(prevItems => {
-      const existingItem = prevItems.find(item => item.id === productToAdd.id);
-      if (existingItem) {
-        // Jika produk sudah ada, update quantity-nya
-        return prevItems.map(item =>
-          item.id === productToAdd.id
-            ? { ...item, quantity: item.quantity + quantity } // Tambahkan quantity yang baru
-            : item
-        );
-      } else {
-        // Jika produk belum ada, tambahkan sebagai item baru
-        return [...prevItems, { ...productToAdd, quantity }]; 
-      }
-    });
-    showNotification(`${productToAdd.name} ditambahkan ke keranjang!`, 'success');
-  };
-
-  const updateQuantity = (productId, newQuantity) => {
-    if (newQuantity < 1) {
-        removeItem(productId);
-        return;
+      // Perbarui tampilan keranjang di seluruh aplikasi
+      refreshCart();
+    } catch (error) {
+      console.error('Error menambahkan ke cart:', error);
+      showNotification('Gagal menambahkan ke keranjang.', 'error');
     }
-    setCartItems(cartItems.map(item =>
-      item.id === productId ? { ...item, quantity: newQuantity } : item
-    ));
-    showNotification('Kuantitas diperbarui.', 'info');
   };
 
-   const removeItem = (productId) => {
-    const removedItemName = cartItems.find(item => item.id === productId)?.name; // Dapatkan nama item sebelum dihapus
-    setCartItems(cartItems.filter(item => item.id !== productId));
-    // ❤️ BARIS BARU: Tampilkan notifikasi setelah menghapus item
-    showNotification(`${removedItemName || 'Item'} dihapus dari keranjang.`, 'info');
+  const updateQuantity = async (itemId, newQuantity) => {
+    try {
+      await axios.put(`/api/cart/${itemId}`, { quantity: newQuantity });
+      refreshCart();
+      showNotification('Kuantitas berhasil diperbarui!', 'success');
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      showNotification('Gagal memperbarui kuantitas.', 'error');
+    }
   };
 
-  const toggleFavorite = (productToToggle) => {
+  const removeItem = async (itemId, productName) => {
+    try {
+      await axios.delete(`/api/cart/${itemId}`);
+      refreshCart(); // Ini yang memicu pembaruan di komponen lain
+      showNotification(`"${productName}" berhasil dihapus dari keranjang.`, 'success');
+    } catch (error) {
+      console.error('Error removing item:', error);
+      showNotification('Gagal menghapus item.', 'error');
+    }
+  };
+
+  const toggleFavorite = (product) => {
     setFavoriteItems(prevFavorites => {
-      const isFavorite = prevFavorites.some(item => item.id === productToToggle.id);
-      if (isFavorite) {
-        showNotification(`${productToToggle.name} dihapus dari favorit.`, 'info');
-        return prevFavorites.filter(item => item.id !== productToToggle.id);
+      const isCurrentlyFavorite = prevFavorites.some(item => item.id === product.id);
+      if (isCurrentlyFavorite) {
+        showNotification(`${product.name} berhasil dihapus dari favorit.`, 'success');
+        return prevFavorites.filter(item => item.id !== product.id);
       } else {
-        showNotification(`${productToToggle.name} ditambahkan ke favorit!`, 'success');
-        return [...prevFavorites, productToToggle];
+        showNotification(`${product.name} berhasil ditambahkan ke favorit!`, 'success');
+        return [...prevFavorites, product];
       }
     });
   };
-
 
   return (
-    <div className="App bg-gray-100 min-h-screen">
+    <Router>
+      <div className="flex flex-col min-h-screen">
+        <Header 
+          cartItemCount={cartItems.length} 
+          favoriteItemCount={favoriteItems.length} 
+          user={user} // <--- Kirim state user ke komponen Header
+          onLogout={handleLogout} // <--- Kirim fungsi logout ke Header
+        />
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          isVisible={notification.isVisible}
+        />
+        <main className="flex-grow pt-20">
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/products" element={
+              <ProductList
+                onAddToCart={addToCart}
+                favoriteItems={favoriteItems}
+                toggleFavorite={toggleFavorite}
+              />
+            } />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/cart" element={
+              <CartPage
+                cartItems={cartItems}
+                onUpdateQuantity={updateQuantity}
+                onRemoveItem={removeItem}
+                showNotification={showNotification}
+                refreshCart={refresh}
+              />
+            } />
+            <Route path="/product/:productId" element={
+              <ProductDetailPage
+                onAddToCart={addToCart}
+                favoriteItems={favoriteItems}
+                toggleFavorite={toggleFavorite}
+                showNotification={showNotification}
+                refreshCart={refresh}
+              />
+            } />
+            <Route path="/favorites" element={
+              <FavoritesPage
+                favoriteItems={favoriteItems}
+                onAddToCart={addToCart}
+                toggleFavorite={toggleFavorite}
+                showNotification={showNotification}
+              />
+            } />
+            <Route path="/checkout" element={
+              <CheckoutPage
+                cartItems={cartItems}
+                setCartItems={setCartItems}
+                showNotification={showNotification}
+              />
+            } />
 
-      <Notification
-        message={notification.message}
-        type={notification.type}
-        isVisible={notification.isVisible}
-        onClose={hideNotification}
-      />
+            {/* --- Start: Rute baru untuk Login dan Registrasi --- */}
+            <Route path="/login" element={
+              <LoginPage onLoginSuccess={handleLoginSuccess} showNotification={showNotification} />
+            } />
+            {/* Tambahkan rute untuk registrasi di sini setelah Anda membuat komponennya */}
+            {/* <Route path="/register" element={<RegisterPage />} /> */}
+            {/* --- End: Rute baru --- */}
 
-      <Header
-         cartItemCount={cartItems.reduce((total, item) => total + item.quantity, 0)}
-         navigateTo={navigateTo}
-         favoriteItemCount={favoriteItems.length} // Ini yang meneruskan jumlah favorit (berupa angka)
-      />
-      <main className="flex-grow pt-20 pb-8">
-
-        {currentPage === 'landing' && <LandingPage navigateTo={navigateTo} />}
-        {currentPage === 'products' && (
-          <>
-            <h1 className="text-3xl font-bold text-center text-gray-800 mt-8 mb-4">Selamat Datang di Toko Tanaman Hias Lokal!</h1>
-            <p className="text-lg text-center text-gray-600 mb-8">Temukan koleksi tanaman hijau terbaik untuk rumah Anda.</p>
-            <ProductList 
-            onAddToCart={addToCart} 
-            navigateTo={navigateTo} 
-            favoriteItems={favoriteItems} 
-            toggleFavorite={toggleFavorite}
-            showNotification={showNotification}
-            /> 
-          </>
-        )}
-
-        {currentPage === 'about' && <AboutPage />}
-
-        {currentPage === 'contact' && <ContactPage />}
-
-        {currentPage === 'cart' && (
-          <CartPage
-            cartItems={cartItems}
-            onUpdateQuantity={updateQuantity}
-            onRemoveItem={removeItem}
-            navigateTo={navigateTo}
-            showNotification={showNotification}
-          />
-        )}
-
-        {currentPage === 'productDetail' && selectedProductId && ( // Tampilkan ProductDetailPage
-          <ProductDetailPage
-            productId={selectedProductId}
-            onAddToCart={addToCart}
-            navigateTo={navigateTo}
-            favoriteItems={favoriteItems} 
-            toggleFavorite={toggleFavorite}
-            showNotification={showNotification}
-          />
-        )}
-
-        {currentPage === 'favorites' && (
-          <FavoritesPage
-            favoriteItems={favoriteItems}
-            onAddToCart={addToCart}
-            toggleFavorite={toggleFavorite}
-            navigateTo={navigateTo}
-            showNotification={showNotification}
-          />
-        )}
-
-      </main>
-      <Footer />
-    </div>
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </Router>
   );
 }
 

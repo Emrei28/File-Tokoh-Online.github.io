@@ -1,13 +1,15 @@
-// src/components/LandingPage.jsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-function LandingPage({ navigateTo }) {
+function LandingPage() {
+  const navigate = useNavigate();
+
   return (
     <div className="relative w-full h-screen flex flex-col items-center justify-center text-white pt-16 sm:pt-20"> 
       <div
         className="absolute inset-0 bg-cover bg-center brightness-75 transition-all duration-700 ease-in-out supports-[background-attachment:fixed]:bg-fixed"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1530209925954-8aecf4eb1e43?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGZsb3dlcnN8ZW58MHx8MHx8fDA%3D')", // ❤️ URL Gambar Baru!
+          backgroundImage: "url('https://images.unsplash.com/photo-1530209925954-8aecf4eb1e43?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGZsb3dlcnN8ZW58MHx8MHx8fDA%3D')",
           backgroundAttachment: 'fixed', 
         }}
       ></div>
@@ -21,7 +23,7 @@ function LandingPage({ navigateTo }) {
         </p>
         
         <button
-          onClick={() => navigateTo('products')}
+          onClick={() => navigate('/products')}
           className="bg-green-600 text-white text-xl sm:text-2xl font-bold py-3 px-8 rounded-full shadow-lg 
                      hover:bg-green-700 transform hover:scale-105 transition duration-300 ease-in-out 
                      animate-bounce-slow"
@@ -34,30 +36,30 @@ function LandingPage({ navigateTo }) {
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 text-center">
           <div className="flex flex-col items-center">
             <img
-              src="https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjM2fHxwYW5kYSUyMHBsYW50fGVufDB8fDB8fHww" // ❤️ URL Gambar Baru
+              src="https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjM2fHxwYW5kYSUyMHBsYW50fGVufDB8fDB8fHww"
               alt="Kualitas Terjamin"
-              className="mb-4 w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full object-cover shadow-md" // ❤️ Ukuran dan shadow baru
+              className="mb-4 w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full object-cover shadow-md"
             />
-            <h3 className="text-xl sm:text-2xl font-bold mb-2">Kualitas Terjamin</h3> {/* ❤️ Ukuran teks baru */}
-            <p className="text-md sm:text-lg">Setiap tanaman dipilih dengan cermat untuk kualitas terbaik.</p> {/* ❤️ Ukuran teks baru */}
+            <h3 className="text-xl sm:text-2xl font-bold mb-2">Kualitas Terjamin</h3>
+            <p className="text-md sm:text-lg">Setiap tanaman dipilih dengan cermat untuk kualitas terbaik.</p>
           </div>
           <div className="flex flex-col items-center">
             <img
-              src="https://images.unsplash.com/photo-1632380211596-b96123618ca8?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTEzfHxhbG9lJTIwdmVyYXxlbnwwfHwwfHx8MA%3D%3D" // ❤️ URL Gambar Baru
+              src="https://images.unsplash.com/photo-1632380211596-b96123618ca8?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTEzfHxhbG9lJTIwdmVyYXxlbnwwfHwwfHx8MA%3D%3D"
               alt="Pengiriman Aman"
-              className="mb-4 w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full object-cover shadow-md" // ❤️ Ukuran dan shadow baru
+              className="mb-4 w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full object-cover shadow-md"
             />
-            <h3 className="text-xl sm:text-2xl font-bold mb-2">Pengiriman Aman & Cepat</h3> {/* ❤️ Ukuran teks baru */}
-            <p className="text-md sm:text-lg">Dikemas khusus agar sampai di tangan Anda dengan selamat.</p> {/* ❤️ Ukuran teks baru */}
+            <h3 className="text-xl sm:text-2xl font-bold mb-2">Pengiriman Aman & Cepat</h3>
+            <p className="text-md sm:text-lg">Dikemas khusus agar sampai di tangan Anda dengan selamat.</p>
           </div>
           <div className="flex flex-col items-center">
             <img
-              src="https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjM2fHxwYW5kYSUyMHBsYW50fGVufDB8fDB8fHww" // ❤️ URL Gambar Baru
+              src="https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjM2fHxwYW5kYSUyMHBsYW50fGVufDB8fDB8fHww"
               alt="Panduan Perawatan"
-              className="mb-4 w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full object-cover shadow-md" // ❤️ Ukuran dan shadow baru
+              className="mb-4 w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full object-cover shadow-md"
             />
-            <h3 className="text-xl sm:text-2xl font-bold mb-2">Panduan Perawatan</h3> {/* ❤️ Ukuran teks baru */}
-            <p className="text-md sm:text-lg">Dapatkan tips dan panduan lengkap untuk menjaga tanaman Anda.</p> {/* ❤️ Ukuran teks baru */}
+            <h3 className="text-xl sm:text-2xl font-bold mb-2">Panduan Perawatan</h3>
+            <p className="text-md sm:text-lg">Dapatkan tips dan panduan lengkap untuk menjaga tanaman Anda.</p>
           </div>
         </div>
       </section>
