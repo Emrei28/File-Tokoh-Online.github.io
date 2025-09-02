@@ -1,31 +1,14 @@
-import React, { useState, useEffect } from 'react';
+// src/components/CartPage.jsx
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
-function CartPage({ onUpdateQuantity, onRemoveItem, showNotification, refreshCart }) {
+function CartPage({ cartItems, onUpdateQuantity, onRemoveItem, showNotification, refreshCart }) {
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      try {
-        const response = await axios.get('https://tokoh-online-server.vercel.app/api/cart');
-        setCartItems(response.data);
-      } catch (error) {
-        console.error('Error fetching cart:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCartItems();
-  }, [refreshCart]);
 
   const totalOverallPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
   const handleUpdateQuantity = async (productId, newQuantity) => {
     try {
-      const item = cartItems.find(item => item.id === productId);
       await onUpdateQuantity(productId, newQuantity);
     } catch (error) {
       console.error('Error updating quantity:', error);
@@ -42,16 +25,6 @@ function CartPage({ onUpdateQuantity, onRemoveItem, showNotification, refreshCar
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-green-500"></div>
-        <p className="ml-4 text-gray-600 text-xl font-semibold">Memuat keranjang...</p>
-      </div>
-    );
-  }
-
-  // Perubahan hanya di bagian ini: tambahkan pesan dan tombol saat keranjang kosong
   if (cartItems.length === 0) {
     return (
       <div className="container mx-auto p-4 text-center mt-8">

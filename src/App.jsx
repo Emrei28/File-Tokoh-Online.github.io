@@ -1,6 +1,6 @@
-// App.jsx
+// src/App.jsx
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import ProductList from './components/ProductList';
 import CartPage from './components/CartPage';
@@ -12,12 +12,12 @@ import FavoritesPage from './components/FavoritesPage';
 import Notification from './components/Notification';
 import LandingPage from './components/LandingPage';
 import CheckoutPage from './components/CheckoutPage';
+import LoginPage from './components/LoginPage';
+import RegisterPage from './components/RegisterPage';
 import axios from 'axios';
-import LoginPage from './components/LoginPage'; // <--- Tambahkan impor LoginPage
 
 import './App.css';
 
-// Atur URL dasar untuk semua permintaan API
 axios.defaults.baseURL = 'https://tokoh-online-server.vercel.app';
 
 function App() {
@@ -37,66 +37,8 @@ function App() {
     isVisible: false,
   });
   const [refresh, setRefresh] = useState(false);
-
-  // --- Start: Perubahan untuk Autentikasi ---
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-  
-  // Fungsi untuk menangani login yang berhasil
-  const handleLoginSuccess = (newToken, newUser) => {
-    setToken(newToken);
-    setUser(newUser);
-    // Set header Authorization global agar setiap request menyertakan token
-    axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-    refreshCart(); // Perbarui keranjang setelah login
-  };
-
-  // Fungsi untuk menangani logout
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setToken(null);
-    setUser(null);
-    // Hapus header Authorization saat logout
-    delete axios.defaults.headers.common['Authorization'];
-    showNotification('Anda telah keluar dari akun.', 'info');
-    // Mungkin Anda ingin mengosongkan keranjang di sini juga
-    setCartItems([]);
-  };
-
-  useEffect(() => {
-    // Cek localStorage saat aplikasi pertama kali dimuat
-    const storedToken = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
-      axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
-    }
-    
-    // Perbarui keranjang saat token atau user berubah
-    const fetchCartItems = async () => {
-      try {
-        const response = await axios.get('/api/cart');
-        setCartItems(response.data);
-      } catch (error) {
-        console.error('Error fetching cart:', error);
-        // Tangani error, misal token kadaluarsa
-        if (error.response && error.response.status === 403) {
-            handleLogout();
-        }
-      }
-    };
-    fetchCartItems();
-
-  }, [token, refresh]); // Tambahkan `token` sebagai dependency
-
-  // --- End: Perubahan untuk Autentikasi ---
-
-  useEffect(() => {
-    localStorage.setItem('favoriteItems', JSON.stringify(favoriteItems));
-  }, [favoriteItems]);
 
   const showNotification = (message, type = 'success') => {
     setNotification({ message, type, isVisible: true });
@@ -108,19 +50,66 @@ function App() {
   const refreshCart = () => {
     setRefresh(prev => !prev);
   };
-  
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setToken(null);
+    setUser(null);
+    delete axios.defaults.headers.common['Authorization'];
+    setCartItems([]);
+    showNotification('Anda telah keluar dari akun.', 'info');
+  };
+
+  const handleLoginSuccess = (newToken, newUser) => {
+    setToken(newToken);
+    setUser(newUser);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+    refreshCart();
+  };
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+
+    if (storedToken && storedUser) {
+      setToken(storedToken);
+      setUser(JSON.parse(storedUser));
+      axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      if (token) {
+        try {
+          const response = await axios.get('/api/cart');
+          setCartItems(response.data || []);
+        } catch (error) {
+          console.error('Error fetching cart:', error);
+          if (error.response && error.response.status === 403) {
+            handleLogout();
+          }
+          setCartItems([]);
+        }
+      } else {
+        setCartItems([]);
+      }
+    };
+    fetchCartItems();
+  }, [token, refresh]);
+
+  useEffect(() => {
+    localStorage.setItem('favoriteItems', JSON.stringify(favoriteItems));
+  }, [favoriteItems]);
+
   const addToCart = async (productToAdd, quantity = 1) => {
     try {
-      // Sekarang kita tidak perlu mencari item di state lokal lagi,
-      // cukup kirim data ke backend, backend yang akan menentukan apakah akan menambah atau memperbarui.
-      const response = await axios.post('/api/cart', {
+      await axios.post('/api/cart', {
         product_id: productToAdd.id,
         quantity: quantity,
       });
-
       showNotification(`${quantity} ${productToAdd.name} berhasil ditambahkan ke keranjang!`, 'success');
-
-      // Perbarui tampilan keranjang di seluruh aplikasi
       refreshCart();
     } catch (error) {
       console.error('Error menambahkan ke cart:', error);
@@ -142,7 +131,7 @@ function App() {
   const removeItem = async (itemId, productName) => {
     try {
       await axios.delete(`/api/cart/${itemId}`);
-      refreshCart(); // Ini yang memicu pembaruan di komponen lain
+      refreshCart();
       showNotification(`"${productName}" berhasil dihapus dari keranjang.`, 'success');
     } catch (error) {
       console.error('Error removing item:', error);
@@ -167,10 +156,10 @@ function App() {
     <Router>
       <div className="flex flex-col min-h-screen">
         <Header 
-          cartItemCount={cartItems.length} 
+          cartItemCount={cartItems.reduce((total, item) => total + item.quantity, 0)} // Hitung total kuantitas
           favoriteItemCount={favoriteItems.length} 
-          user={user} // <--- Kirim state user ke komponen Header
-          onLogout={handleLogout} // <--- Kirim fungsi logout ke Header
+          user={user}
+          onLogout={handleLogout}
         />
         <Notification
           message={notification.message}
@@ -191,11 +180,10 @@ function App() {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/cart" element={
               <CartPage
-                cartItems={cartItems}
                 onUpdateQuantity={updateQuantity}
                 onRemoveItem={removeItem}
                 showNotification={showNotification}
-                refreshCart={refresh}
+                refreshCart={refreshCart}
               />
             } />
             <Route path="/product/:productId" element={
@@ -204,7 +192,7 @@ function App() {
                 favoriteItems={favoriteItems}
                 toggleFavorite={toggleFavorite}
                 showNotification={showNotification}
-                refreshCart={refresh}
+                refreshCart={refreshCart}
               />
             } />
             <Route path="/favorites" element={
@@ -222,15 +210,12 @@ function App() {
                 showNotification={showNotification}
               />
             } />
-
-            {/* --- Start: Rute baru untuk Login dan Registrasi --- */}
             <Route path="/login" element={
               <LoginPage onLoginSuccess={handleLoginSuccess} showNotification={showNotification} />
             } />
-            {/* Tambahkan rute untuk registrasi di sini setelah Anda membuat komponennya */}
-            {/* <Route path="/register" element={<RegisterPage />} /> */}
-            {/* --- End: Rute baru --- */}
-
+            <Route path="/register" element={
+              <RegisterPage onLoginSuccess={handleLoginSuccess} showNotification={showNotification} />
+            } />
           </Routes>
         </main>
         <Footer />
